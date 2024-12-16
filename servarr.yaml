@@ -1,0 +1,107 @@
+version: '3.5'
+networks:
+  default_bridge:
+    external: true
+services:
+ jellyfin:
+    image: lscr.io/linuxserver/jellyfin:latest
+    container_name: jellyfin
+    networks: 
+      - default_bridge
+    environment:
+      - PUID=1026
+      - PGID=101
+      - TZ=America/New_York
+      - JELLYFIN_PublishedServerUrl=192.168.1.2
+    volumes:
+      - /volume1/docker/jellyfin/config:/config:rw
+      - /volume1/docker/jellyfin/cache:/cache:rw
+      - /volume1/Media/Shows:/Shows:rw
+      - /volume1/Media/Movies:/Movies:rw
+    ports:
+      - 8096:8096
+    restart: unless-stopped
+
+    cpu_percent: 50
+    mem_limit: "1GB"
+ jellyseerr:
+    image: fallenbagel/jellyseerr:latest
+    networks: 
+      - default_bridge
+    container_name: jellyseerr
+    environment:
+      - LOG_LEVEL=debug
+      - TZ=America/New_York
+    ports:
+      - 5055:5055
+    volumes:
+      - /volume1/docker/jellyseerr:/app/config:rw
+    restart: unless-stopped
+    cpu_percent: 25
+    mem_limit: "1GB"
+
+ radarr:
+    image: ghcr.io/linuxserver/radarr:latest
+    container_name: radarr
+    restart: on-failure:5
+    networks:
+      - default_bridge
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - /volume1/docker/radarr:/config
+      - /volume1/Media/Downloads:/Downloads:rw
+      - /volume1/Media/Movies:/Movies:rw
+    environment:
+      - TZ:America/New_York
+      - PUID=1026
+      - PGID=101
+    ports:
+      - 7878:7878
+ sonarr:
+    image: ghcr.io/linuxserver/sonarr:latest
+    container_name: sonarr
+    restart: on-failure:5
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - default_bridge
+    volumes:
+      - /volume1/docker/sonarr:/config
+      - /volume1/Media/Downloads:/Downloads:rw
+      - /volume1/Media/Shows:/Shows:rw
+    environment:
+      - TZ:America/New_York
+      - PUID=1026
+      - PGID=101
+    ports:
+      - 8989:8989
+ prowlarr:
+    image: ghcr.io/linuxserver/prowlarr:latest
+    container_name: prowlarr
+    restart: on-failure:5
+    networks:
+      - default_bridge
+    security_opt:
+      - no-new-privileges:true
+    volumes: 
+      -  /volume1/docker/prowlarr:/config
+    environment:
+      - TZ:America/New_York
+      - PUID=1026
+      - PGID=101 
+    ports:
+      - 9696:9696
+ flaresolverr:
+    container_name: flaresolverr
+    networks:
+      - default_bridge
+    image: ghcr.io/flaresolverr/flaresolverr:latest
+    restart: unless-stopped
+    environment:
+      - LOG_LEVEL:info
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock # Optional, only if you want docker integration
+    ports:
+      - '8191:8191'
+
