@@ -17,6 +17,8 @@ services:
     #  - UID=1000
     #  - GID=1000
     restart: unless-stopped
+    volumes:
+      - volume1/docker/dashy/my-local-conf.yml:/app/user-data/conf.ym
     networks: 
       - default_bridge
     healthcheck:
