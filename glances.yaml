@@ -1,0 +1,25 @@
+version: "3.9"
+networks:
+  default_bridge:
+    external: true
+services:
+  glances:
+    container_name: Glances
+    image: nicolargo/glances:latest-full
+    healthcheck:
+     test: curl -f http://localhost:61208/ || exit 1
+    mem_limit: 1g
+    cpu_shares: 768
+    security_opt:
+      - no-new-privileges:true
+    pid: host
+    privileged: true
+    networks: 
+      - default_bridge
+    restart: on-failure:5
+    ports:
+      - 61208:61208
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    environment:
+      GLANCES_OPT: -w
