@@ -1,7 +1,6 @@
 networks:
   default_bridge:
     external: true
-version: "3.8"
 services:
   dashy:
     container_name: dashy
