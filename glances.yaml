@@ -4,7 +4,7 @@ networks:
     external: true
 services:
   glances:
-    container_name: Glances
+    container_name: glances
     image: nicolargo/glances:latest-full
     healthcheck:
      test: curl -f http://localhost:61208/ || exit 1
