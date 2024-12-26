@@ -12,7 +12,7 @@ services:
       - /volume1/docker/flame:/app/data
       - /var/run/docker.sock:/var/run/docker.sock # optional but required for Docker integration
     ports:
-      - 5005:5005
+      - 5055:5005
     environment:
       - PASSWORD=CarbonGTI#2015
     restart: unless-stopped
