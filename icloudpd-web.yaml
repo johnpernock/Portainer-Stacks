@@ -1,0 +1,14 @@
+networks:
+  default_bridge:
+    external: true
+services:
+  icloudpd-web:
+    container_name: icloudpd-web
+    image: spicadust/icloudpd-web
+    ports:
+      - 9210:5000
+    restart: unless-stopped
+    volumes:
+      - /volume1/docker/icloudpd/:/app
+    networks: 
+      - default_bridge
